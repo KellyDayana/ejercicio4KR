@@ -90,7 +90,23 @@ def eliminar_viaje(request, id):
 
 @login_required
 def listado_recibos(request, viaje_id):
-    return render(request, 'listadoRecibos.html')
+    viaje = Viaje.objects.get(id=viaje_id)
+    recibos = Recibo.objects.filter(viaje=viaje)
+    total_gastado = sum(r.monto for r in recibos)
+
+    hospedaje = sum(r.monto for r in recibos if r.tipo_gasto == 'hospedaje')
+    alimentacion = sum(r.monto for r in recibos if r.tipo_gasto == 'alimentacion')
+
+    porcentaje_hospedaje = round((hospedaje / total_gastado * 100), 1) if total_gastado > 0 else 0
+    porcentaje_alimentacion = round((alimentacion / total_gastado * 100), 1) if total_gastado > 0 else 0
+
+    return render(request, 'listadoRecibos.html', {
+        'viaje': viaje,
+        'recibos': recibos,
+        'total_gastado': total_gastado,
+        'porcentaje_hospedaje': porcentaje_hospedaje,
+        'porcentaje_alimentacion': porcentaje_alimentacion,
+    })
 
 
 @login_required
@@ -122,17 +138,40 @@ def guardar_recibo(request, viaje_id):
 
 @login_required
 def editar_recibo(request, id):
-    return render(request, 'editarRecibo.html')
+    recibo = Recibo.objects.get(id=id)
+    return render(request, 'editarRecibo.html', {'recibo': recibo})
 
 
 @login_required
 def procesar_edicion_recibo(request):
-    return redirect('viaje_lista')
+    id = request.POST['id']
+    recibo = Recibo.objects.get(id=id)
+    recibo.concepto = request.POST['concepto']
+    recibo.monto = request.POST['monto']
+    recibo.fecha_emision = request.POST['fecha_emision']
+    recibo.tipo_gasto = request.POST['tipo_gasto']
+
+    nuevo_pdf = request.FILES.get('pdf')
+    if nuevo_pdf:
+        if recibo.pdf and os.path.isfile(recibo.pdf.path):
+            os.remove(recibo.pdf.path)
+        recibo.pdf = nuevo_pdf
+
+    recibo.save()
+    messages.success(request, 'Recibo actualizado correctamente.')
+    return redirect('listado_recibos', viaje_id=recibo.viaje.id)
 
 
 @login_required
 def eliminar_recibo(request, id):
-    return redirect('viaje_lista')
+    recibo = Recibo.objects.get(id=id)
+    viaje_id = recibo.viaje.id
+    if recibo.pdf:
+        if os.path.isfile(recibo.pdf.path):
+            os.remove(recibo.pdf.path)
+    recibo.delete()
+    messages.success(request, 'Recibo eliminado correctamente.')
+    return redirect('listado_recibos', viaje_id=viaje_id)
 
 
 def login_view(request):

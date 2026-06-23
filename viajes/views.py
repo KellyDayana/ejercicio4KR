@@ -51,11 +51,29 @@ def reporte(request):
 
 @login_required
 def editar_viaje(request, id):
-    return render(request, 'editarViaje.html')
+    viaje = Viaje.objects.get(id=id)
+    return render(request, 'editarViaje.html', {'viaje': viaje})
 
 
 @login_required
 def procesar_edicion_viaje(request):
+    id = request.POST['id']
+    viaje = Viaje.objects.get(id=id)
+    viaje.destino = request.POST['destino']
+    viaje.fecha_inicio = request.POST['fecha_inicio']
+    viaje.fecha_fin = request.POST['fecha_fin']
+    viaje.estado = request.POST['estado']
+    viaje.departamento = request.POST['departamento']
+    viaje.requiere_anticipo = 'requiere_anticipo' in request.POST
+
+    nueva_foto = request.FILES.get('foto')
+    if nueva_foto:
+        if viaje.foto and os.path.isfile(viaje.foto.path):
+            os.remove(viaje.foto.path)
+        viaje.foto = nueva_foto
+
+    viaje.save()
+    messages.success(request, 'Viaje actualizado correctamente.')
     return redirect('viaje_lista')
 
 

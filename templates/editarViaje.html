@@ -1,0 +1,221 @@
+{% extends 'plantillaPrincipal.html' %}
+
+{% block titulo %}Editar Viaje{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid booking py-5">
+    <div class="container py-5">
+        <div class="row g-5 align-items-start">
+            <div class="col-lg-5">
+                <h5 class="section-booking-title pe-3">Viajes</h5>
+                <h1 class="text-white mb-4">Editar Viaje</h1>
+                <p class="text-white mb-4">Modifique los datos del viaje. Si sube una nueva foto, la anterior será reemplazada automáticamente.</p>
+                <a href="{% url 'viaje_lista' %}" class="btn btn-light text-primary rounded-pill py-3 px-5 mt-2">
+                    <i class="fa fa-arrow-left me-2"></i> Volver al Listado
+                </a>
+            </div>
+            <div class="col-lg-7">
+                <h1 class="text-white mb-3">Datos del Viaje</h1>
+                <form enctype="multipart/form-data" action="{% url 'procesar_edicion_viaje' %}" method="post" id="formEditarViaje" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ viaje.id }}">
+                    <div class="row g-3">
+
+                        <!-- Destino -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control bg-white border-0"
+                                       name="destino" id="destino" placeholder="Destino"
+                                       maxlength="200" value="{{ viaje.destino }}">
+                                <label for="destino">Destino</label>
+                            </div>
+                            <div class="text-warning small" id="errorDestino"></div>
+                        </div>
+
+                        <!-- Fecha Inicio -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="date" class="form-control bg-white border-0"
+                                       name="fecha_inicio" id="fecha_inicio" placeholder="Fecha de Inicio"
+                                       value="{{ viaje.fecha_inicio|date:'Y-m-d' }}">
+                                <label for="fecha_inicio">Fecha de Inicio</label>
+                            </div>
+                            <div class="text-warning small" id="errorFechaInicio"></div>
+                        </div>
+
+                        <!-- Fecha Fin -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="date" class="form-control bg-white border-0"
+                                       name="fecha_fin" id="fecha_fin" placeholder="Fecha de Fin"
+                                       value="{{ viaje.fecha_fin|date:'Y-m-d' }}">
+                                <label for="fecha_fin">Fecha de Fin</label>
+                            </div>
+                            <div class="text-warning small" id="errorFechaFin"></div>
+                        </div>
+
+                        <!-- Estado (Radio Buttons) -->
+                        <div class="col-12">
+                            <label class="text-white fw-bold mb-2">Estado del Viaje</label>
+                            <div class="d-flex gap-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="estado"
+                                           id="estadoActivo" value="activo"
+                                           {% if viaje.estado == 'activo' %}checked{% endif %}>
+                                    <label class="form-check-label text-white" for="estadoActivo">Activo</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="estado"
+                                           id="estadoConcluido" value="concluido"
+                                           {% if viaje.estado == 'concluido' %}checked{% endif %}>
+                                    <label class="form-check-label text-white" for="estadoConcluido">Concluido</label>
+                                </div>
+                            </div>
+                            <div class="text-warning small" id="errorEstado"></div>
+                        </div>
+
+                        <!-- Departamento (Select) -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <select class="form-select bg-white border-0" name="departamento" id="departamento">
+                                    <option value="">-- Seleccione --</option>
+                                    <option value="ventas" {% if viaje.departamento == 'ventas' %}selected{% endif %}>Ventas</option>
+                                    <option value="soporte" {% if viaje.departamento == 'soporte' %}selected{% endif %}>Soporte</option>
+                                    <option value="direccion" {% if viaje.departamento == 'direccion' %}selected{% endif %}>Dirección</option>
+                                </select>
+                                <label for="departamento">Departamento</label>
+                            </div>
+                            <div class="text-warning small" id="errorDepartamento"></div>
+                        </div>
+
+                        <!-- Requiere Anticipo -->
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="requiere_anticipo"
+                                       id="requiere_anticipo" {% if viaje.requiere_anticipo %}checked{% endif %}>
+                                <label class="form-check-label text-white" for="requiere_anticipo">
+                                    Requiere Anticipo
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Foto con preview -->
+                        <div class="col-12">
+                            <label class="text-white fw-bold mb-2">Foto (credencial o boleto)</label>
+                            <input type="file" name="foto" id="foto" class="form-control">
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="col-md-6">
+                            <button class="btn btn-primary text-white w-100 py-3" type="submit">
+                                <i class="fa fa-save me-2"></i> Actualizar
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'viaje_lista' %}" class="btn btn-light text-danger w-100 py-3">
+                                <i class="fa fa-times me-2"></i> Cancelar
+                            </a>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // FileInput con preview de foto actual
+    {% if viaje.foto %}
+    $("#foto").fileinput({
+        language: "es",
+        allowedFileExtensions: ["png", "jpg", "jpeg"],
+        showCaption: false,
+        dropZoneEnabled: true,
+        showClose: false,
+        browseLabel: "Examinar...",
+        removeLabel: "Quitar",
+        initialPreview: [
+            '<img src="{{ viaje.foto.url }}" class="file-preview-image" style="height:160px;">'
+        ],
+        initialPreviewConfig: [
+            { caption: "{{ viaje.foto.name }}", showDelete: false }
+        ],
+        overwriteInitial: true
+    });
+    {% else %}
+    $("#foto").fileinput({
+        language: "es",
+        allowedFileExtensions: ["png", "jpg", "jpeg"],
+        showCaption: false,
+        dropZoneEnabled: true,
+        showClose: false,
+        browseLabel: "Examinar...",
+        removeLabel: "Quitar"
+    });
+    {% endif %}
+    $(".fileinput-upload").hide();
+
+    // Validaciones JS
+    document.getElementById('formEditarViaje').addEventListener('submit', function(e) {
+        let valido = true;
+
+        const destino = document.getElementById('destino').value.trim();
+        const errorDestino = document.getElementById('errorDestino');
+        if (destino === '') {
+            errorDestino.textContent = 'El destino es obligatorio.';
+            valido = false;
+        } else if (destino.length < 3) {
+            errorDestino.textContent = 'El destino debe tener al menos 3 caracteres.';
+            valido = false;
+        } else {
+            errorDestino.textContent = '';
+        }
+
+        const fechaInicio = document.getElementById('fecha_inicio').value;
+        const errorFechaInicio = document.getElementById('errorFechaInicio');
+        if (fechaInicio === '') {
+            errorFechaInicio.textContent = 'La fecha de inicio es obligatoria.';
+            valido = false;
+        } else {
+            errorFechaInicio.textContent = '';
+        }
+
+        const fechaFin = document.getElementById('fecha_fin').value;
+        const errorFechaFin = document.getElementById('errorFechaFin');
+        if (fechaFin === '') {
+            errorFechaFin.textContent = 'La fecha de fin es obligatoria.';
+            valido = false;
+        } else if (fechaFin < fechaInicio) {
+            errorFechaFin.textContent = 'La fecha de fin no puede ser anterior a la de inicio.';
+            valido = false;
+        } else {
+            errorFechaFin.textContent = '';
+        }
+
+        const estado = document.querySelector('input[name="estado"]:checked');
+        const errorEstado = document.getElementById('errorEstado');
+        if (!estado) {
+            errorEstado.textContent = 'Seleccione el estado del viaje.';
+            valido = false;
+        } else {
+            errorEstado.textContent = '';
+        }
+
+        const departamento = document.getElementById('departamento').value;
+        const errorDepartamento = document.getElementById('errorDepartamento');
+        if (departamento === '') {
+            errorDepartamento.textContent = 'Seleccione el departamento.';
+            valido = false;
+        } else {
+            errorDepartamento.textContent = '';
+        }
+
+        if (!valido) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -60,6 +61,12 @@ def procesar_edicion_viaje(request):
 
 @login_required
 def eliminar_viaje(request, id):
+    viaje = Viaje.objects.get(id=id)
+    if viaje.foto:
+        if os.path.isfile(viaje.foto.path):
+            os.remove(viaje.foto.path)
+    viaje.delete()
+    messages.success(request, 'Viaje eliminado correctamente.')
     return redirect('viaje_lista')
 
 

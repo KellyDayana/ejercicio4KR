@@ -1,0 +1,26 @@
+# Cache de Python - generado automáticamente, NO commitear
+__pycache__/
+*.pyc
+*.pyo
+
+# Base de datos local
+*.db
+db.sqlite3
+
+# Archivos de VS Code
+.vscode/
+
+# Archivos de sistema
+.DS_Store
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Media subidos por usuarios
+media/
+
+# Static files recolectados
+/static/
+/staticfiles/

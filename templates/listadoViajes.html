@@ -1,0 +1,106 @@
+{% extends 'plantillaPrincipal.html' %}
+
+{% block titulo %}Listado de Viajes{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid py-5">
+    <div class="container py-5">
+
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-8">
+                <h5 class="section-title px-3">Viajes</h5>
+                <h1 class="mb-0">Listado de Viajes</h1>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{% url 'nuevo_viaje' %}" class="btn btn-primary rounded-pill py-2 px-4">
+                    <i class="fa fa-plus me-2"></i> Nuevo Viaje
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded p-4 shadow-sm">
+            <table id="tblViajes" class="display w-100">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Foto</th>
+                        <th>Destino</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Estado</th>
+                        <th>Departamento</th>
+                        <th>Anticipo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for viaje in viajes %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="text-center">
+                            {% if viaje.foto %}
+                                <a href="{{ viaje.foto.url }}" target="_blank">
+                                    <img src="{{ viaje.foto.url }}"
+                                         style="height: 80px; width: 80px; border-radius: 50%; object-fit: cover;">
+                                </a>
+                            {% else %}
+                                <b>N/A</b>
+                            {% endif %}
+                        </td>
+                        <td>{{ viaje.destino }}</td>
+                        <td>{{ viaje.fecha_inicio }}</td>
+                        <td>{{ viaje.fecha_fin }}</td>
+                        <td>
+                            {% if viaje.estado == 'activo' %}
+                                <span class="badge bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Concluido</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ viaje.get_departamento_display }}</td>
+                        <td>
+                            {% if viaje.requiere_anticipo %}
+                                <span class="badge bg-warning text-dark">Sí</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark">No</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'editar_viaje' viaje.id %}" class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{% url 'listado_recibos' viaje.id %}" class="btn btn-sm btn-outline-success me-1" title="Ver Recibos">
+                                <i class="fa fa-receipt"></i>
+                            </a>
+                            <a href="#" data-url="{% url 'eliminar_viaje' viaje.id %}"
+                               onclick="event.preventDefault(); confirmarEliminacion(this)"
+                               class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">No hay viajes registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    new DataTable('#tblViajes', {
+        layout: {
+            topStart: {
+                buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5']
+            }
+        },
+        language: dtEspanol
+    });
+</script>
+{% endblock %}

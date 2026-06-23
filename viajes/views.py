@@ -11,7 +11,8 @@ def inicio(request):
 
 @login_required
 def viaje_lista(request):
-    return render(request, 'listadoViajes.html')
+    viajes = Viaje.objects.all()
+    return render(request, 'listadoViajes.html', {'viajes': viajes})
 
 
 @login_required
@@ -45,6 +46,51 @@ def guardar_viaje(request):
 @login_required
 def reporte(request):
     return render(request, 'reporte.html')
+
+
+@login_required
+def editar_viaje(request, id):
+    return render(request, 'editarViaje.html')
+
+
+@login_required
+def procesar_edicion_viaje(request):
+    return redirect('viaje_lista')
+
+
+@login_required
+def eliminar_viaje(request, id):
+    return redirect('viaje_lista')
+
+
+@login_required
+def listado_recibos(request, viaje_id):
+    return render(request, 'listadoRecibos.html')
+
+
+@login_required
+def nuevo_recibo(request, viaje_id):
+    return render(request, 'nuevoRecibo.html')
+
+
+@login_required
+def guardar_recibo(request, viaje_id):
+    return redirect('viaje_lista')
+
+
+@login_required
+def editar_recibo(request, id):
+    return render(request, 'editarRecibo.html')
+
+
+@login_required
+def procesar_edicion_recibo(request):
+    return redirect('viaje_lista')
+
+
+@login_required
+def eliminar_recibo(request, id):
+    return redirect('viaje_lista')
 
 
 def login_view(request):

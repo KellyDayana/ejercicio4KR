@@ -95,12 +95,29 @@ def listado_recibos(request, viaje_id):
 
 @login_required
 def nuevo_recibo(request, viaje_id):
-    return render(request, 'nuevoRecibo.html')
+    viaje = Viaje.objects.get(id=viaje_id)
+    return render(request, 'nuevoRecibo.html', {'viaje': viaje})
 
 
 @login_required
 def guardar_recibo(request, viaje_id):
-    return redirect('viaje_lista')
+    viaje = Viaje.objects.get(id=viaje_id)
+    concepto = request.POST['concepto']
+    monto = request.POST['monto']
+    fecha_emision = request.POST['fecha_emision']
+    tipo_gasto = request.POST['tipo_gasto']
+    pdf = request.FILES.get('pdf')
+
+    Recibo.objects.create(
+        viaje=viaje,
+        concepto=concepto,
+        monto=monto,
+        fecha_emision=fecha_emision,
+        tipo_gasto=tipo_gasto,
+        pdf=pdf
+    )
+    messages.success(request, 'Recibo guardado correctamente.')
+    return redirect('listado_recibos', viaje_id=viaje_id)
 
 
 @login_required

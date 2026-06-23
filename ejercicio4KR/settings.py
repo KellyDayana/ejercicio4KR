@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'ejercicio4KR.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'ejercicio4KR',
+        'NAME': 'ejercicio4KR.db',
     }
 }
 

@@ -4,26 +4,26 @@ from django.contrib.auth.decorators import login_required
 
 
 def inicio(request):
-    return render(request, 'viajes/inicio.html')
+    return render(request, 'inicio.html')
 
 
 @login_required
 def viaje_lista(request):
-    return render(request, 'viajes/viaje_lista.html')
+    return render(request, 'listadoViajes.html')
 
 
 @login_required
 def viaje_crear(request):
-    return render(request, 'viajes/viaje_form.html')
+    return render(request, 'nuevoViaje.html')
 
 
 @login_required
 def reporte(request):
-    return render(request, 'viajes/reporte.html')
+    return render(request, 'reporte.html')
 
 
 def login_view(request):
-    return render(request, 'viajes/login.html')
+    return render(request, 'login.html')
 
 
 def logout_view(request):

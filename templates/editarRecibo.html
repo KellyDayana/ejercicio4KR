@@ -1,0 +1,188 @@
+{% extends 'plantillaPrincipal.html' %}
+
+{% block titulo %}Editar Recibo{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid booking py-5">
+    <div class="container py-5">
+        <div class="row g-5 align-items-start">
+            <div class="col-lg-5">
+                <h5 class="section-booking-title pe-3">Recibos</h5>
+                <h1 class="text-white mb-4">Editar Recibo</h1>
+                <p class="text-white mb-4">Modifique los datos del recibo. Si sube un nuevo PDF, el anterior será reemplazado automáticamente.</p>
+                <div class="text-white mb-3">
+                    <i class="fa fa-suitcase me-2"></i>
+                    <strong>Viaje:</strong> {{ recibo.viaje.destino }}
+                </div>
+                <a href="{% url 'listado_recibos' recibo.viaje.id %}" class="btn btn-light text-primary rounded-pill py-3 px-5 mt-2">
+                    <i class="fa fa-arrow-left me-2"></i> Volver a Recibos
+                </a>
+            </div>
+            <div class="col-lg-7">
+                <h1 class="text-white mb-3">Datos del Recibo</h1>
+                <form enctype="multipart/form-data" action="{% url 'procesar_edicion_recibo' %}" method="post" id="formEditarRecibo" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ recibo.id }}">
+                    <div class="row g-3">
+
+                        <!-- Concepto -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control bg-white border-0"
+                                       name="concepto" id="concepto" placeholder="Concepto"
+                                       maxlength="200" value="{{ recibo.concepto }}">
+                                <label for="concepto">Concepto</label>
+                            </div>
+                            <div class="text-warning small" id="errorConcepto"></div>
+                        </div>
+
+                        <!-- Monto -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="number" class="form-control bg-white border-0"
+                                       name="monto" id="monto" placeholder="Monto"
+                                       step="0.01" min="0" value="{{ recibo.monto }}">
+                                <label for="monto">Monto ($)</label>
+                            </div>
+                            <div class="text-warning small" id="errorMonto"></div>
+                        </div>
+
+                        <!-- Fecha Emisión -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="date" class="form-control bg-white border-0"
+                                       name="fecha_emision" id="fecha_emision" placeholder="Fecha de Emisión"
+                                       value="{{ recibo.fecha_emision|date:'Y-m-d' }}">
+                                <label for="fecha_emision">Fecha de Emisión</label>
+                            </div>
+                            <div class="text-warning small" id="errorFechaEmision"></div>
+                        </div>
+
+                        <!-- Tipo de Gasto -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <select class="form-select bg-white border-0" name="tipo_gasto" id="tipo_gasto">
+                                    <option value="">-- Seleccione --</option>
+                                    <option value="hospedaje" {% if recibo.tipo_gasto == 'hospedaje' %}selected{% endif %}>Hospedaje</option>
+                                    <option value="alimentacion" {% if recibo.tipo_gasto == 'alimentacion' %}selected{% endif %}>Alimentación</option>
+                                    <option value="transporte" {% if recibo.tipo_gasto == 'transporte' %}selected{% endif %}>Transporte</option>
+                                </select>
+                                <label for="tipo_gasto">Tipo de Gasto</label>
+                            </div>
+                            <div class="text-warning small" id="errorTipoGasto"></div>
+                        </div>
+
+                        <!-- PDF con preview -->
+                        <div class="col-12">
+                            <label class="text-white fw-bold mb-2">PDF (factura o nota de venta)</label>
+                            {% if recibo.pdf %}
+                                <div class="mb-2">
+                                    <a href="{{ recibo.pdf.url }}" target="_blank" class="btn btn-sm btn-outline-light">
+                                        <i class="bi bi-file-pdf me-1"></i> Ver PDF actual
+                                    </a>
+                                </div>
+                            {% endif %}
+                            <input type="file" name="pdf" id="pdf" class="form-control">
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="col-md-6">
+                            <button class="btn btn-primary text-white w-100 py-3" type="submit">
+                                <i class="fa fa-save me-2"></i> Actualizar
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'listado_recibos' recibo.viaje.id %}" class="btn btn-light text-danger w-100 py-3">
+                                <i class="fa fa-times me-2"></i> Cancelar
+                            </a>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    {% if recibo.pdf %}
+    $("#pdf").fileinput({
+        language: "es",
+        allowedFileExtensions: ["pdf"],
+        showCaption: false,
+        dropZoneEnabled: true,
+        showClose: false,
+        browseLabel: "Seleccionar PDF...",
+        removeLabel: "Quitar",
+        initialPreview: [
+            '<div class="text-center p-3"><i class="bi bi-file-pdf fs-1 text-danger"></i><br><small>{{ recibo.pdf.name }}</small></div>'
+        ],
+        initialPreviewConfig: [
+            { caption: "{{ recibo.pdf.name }}", showDelete: false }
+        ],
+        overwriteInitial: true
+    });
+    {% else %}
+    $("#pdf").fileinput({
+        language: "es",
+        allowedFileExtensions: ["pdf"],
+        showCaption: false,
+        dropZoneEnabled: true,
+        showClose: false,
+        browseLabel: "Seleccionar PDF...",
+        removeLabel: "Quitar"
+    });
+    {% endif %}
+    $(".fileinput-upload").hide();
+
+    // Validaciones JS
+    document.getElementById('formEditarRecibo').addEventListener('submit', function(e) {
+        let valido = true;
+
+        const concepto = document.getElementById('concepto').value.trim();
+        const errorConcepto = document.getElementById('errorConcepto');
+        if (concepto === '') {
+            errorConcepto.textContent = 'El concepto es obligatorio.';
+            valido = false;
+        } else if (concepto.length < 3) {
+            errorConcepto.textContent = 'El concepto debe tener al menos 3 caracteres.';
+            valido = false;
+        } else {
+            errorConcepto.textContent = '';
+        }
+
+        const monto = parseFloat(document.getElementById('monto').value);
+        const errorMonto = document.getElementById('errorMonto');
+        if (isNaN(monto) || monto <= 0) {
+            errorMonto.textContent = 'El monto debe ser mayor a 0.';
+            valido = false;
+        } else {
+            errorMonto.textContent = '';
+        }
+
+        const fechaEmision = document.getElementById('fecha_emision').value;
+        const errorFechaEmision = document.getElementById('errorFechaEmision');
+        if (fechaEmision === '') {
+            errorFechaEmision.textContent = 'La fecha de emisión es obligatoria.';
+            valido = false;
+        } else {
+            errorFechaEmision.textContent = '';
+        }
+
+        const tipoGasto = document.getElementById('tipo_gasto').value;
+        const errorTipoGasto = document.getElementById('errorTipoGasto');
+        if (tipoGasto === '') {
+            errorTipoGasto.textContent = 'Seleccione el tipo de gasto.';
+            valido = false;
+        } else {
+            errorTipoGasto.textContent = '';
+        }
+
+        if (!valido) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

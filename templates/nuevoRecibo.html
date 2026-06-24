@@ -1,8 +1,14 @@
 {% extends 'plantillaPrincipal.html' %}
 
 {% block titulo %}Nuevo Recibo{% endblock %}
-
+{% load static%}
 {% block contenido %}
+<div class="container-fluid bg-breadcrumb" style="
+    background: linear-gradient(rgba(19, 53, 123, 0.7), rgba(19, 53, 123, 0.7)), 
+    url('{% static 'img/destination-2.jpg' %}') center center no-repeat; 
+    background-size: cover; 
+    padding: 120px 0 60px 0;">
+</div>
 <div class="container-fluid booking py-5">
     <div class="container py-5">
         <div class="row g-5 align-items-start">

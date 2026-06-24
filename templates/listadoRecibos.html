@@ -9,17 +9,9 @@
 <!-- Se aplica un degradado oscuro (linear-gradient) para que el texto blanco sea fácil de leer -->
 <div class="container-fluid bg-breadcrumb" style="
     background: linear-gradient(rgba(19, 53, 123, 0.7), rgba(19, 53, 123, 0.7)), 
-    url('{% if viaje.foto %}{{ viaje.foto.url }}{% else %}{% static 'img/bg-hero.jpg' %}{% endif %}') center center no-repeat; 
+    url('{% static 'img/destination-2.jpg' %}') center center no-repeat; 
     background-size: cover; 
     padding: 120px 0 60px 0;">
-    <div class="container text-center py-4">
-        <h3 class="text-white display-3 mb-3">Recibos — {{ viaje.destino }}</h3>
-        <p class="text-white-50 mb-0 fs-5">
-            <i class="fa fa-calendar me-1"></i> {{ viaje.fecha_inicio }} al {{ viaje.fecha_fin }}
-            &nbsp;|&nbsp;
-            <i class="fa fa-building me-1"></i> {{ viaje.get_departamento_display }}
-        </p>
-    </div>
 </div>
 
 <!-- Contenido principal de la página -->

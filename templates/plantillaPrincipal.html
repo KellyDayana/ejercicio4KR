@@ -21,6 +21,13 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.8/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.6/css/buttons.dataTables.min.css">
+
+    <!-- Bootstrap FileInput CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.4/css/fileinput.min.css">
 </head>
 
 <body>
@@ -236,6 +243,41 @@
     <script src="{% static 'travela-1.0.0/js/main.js' %}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/2.3.8/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.6/js/dataTables.buttons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.6/js/buttons.html5.min.js"></script>
+
+    <!-- Bootstrap FileInput JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.4/css/fileinput.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.4/js/fileinput.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.4/js/locales/es.min.js"></script>
+
+    <!-- Traducción DataTables español -->
+    <script>
+        const dtEspanol = {
+            emptyTable:   'No hay datos disponibles.',
+            zeroRecords:  'No se encontraron resultados.',
+            info:         'Mostrando _START_ a _END_ de _TOTAL_ entradas',
+            infoEmpty:    'Mostrando 0 a 0 de 0 entradas',
+            infoFiltered: '(filtrado de _MAX_ entradas totales)',
+            search:       'Buscar:',
+            lengthMenu:   'Mostrar _MENU_ entradas',
+            paginate: {
+                first:    'Primero',
+                last:     'Último',
+                next:     'Siguiente',
+                previous: 'Anterior'
+            }
+        };
+    </script>
 
     <script>
         function confirmarEliminacion(btn) {

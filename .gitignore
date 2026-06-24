@@ -24,3 +24,7 @@ media/
 # Static files recolectados
 /static/
 /staticfiles/
+__pycache__/
+*.pyc
+db.sqlite3
+venv/

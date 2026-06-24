@@ -303,8 +303,8 @@
         {% for mensaje in messages %}
         <script>
             Swal.fire({
-                title: "Confirmación",
-                icon: "success",
+                title: "{% if mensaje.tags == 'error' %}Error{% else %}Confirmación{% endif %}",
+                icon: "{% if mensaje.tags == 'error' %}error{% else %}success{% endif %}",
                 text: "{{ mensaje }}",
             });
         </script>

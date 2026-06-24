@@ -13,6 +13,8 @@ urlpatterns = [
     path('viajes/editar/<int:id>/', views.editar_viaje, name='editar_viaje'),
     path('viajes/procesarEdicion/', views.procesar_edicion_viaje, name='procesar_edicion_viaje'),
     path('viajes/eliminar/<int:id>/', views.eliminar_viaje, name='eliminar_viaje'),
+    path('viajes/aprobar/<int:id>/', views.aprobar_viaje, name='aprobar_viaje'),
+    path('viajes/rechazar/<int:id>/', views.rechazar_viaje, name='rechazar_viaje'),
     
     # Rutas de Recibos asociados a un Viaje
     path('viajes/<int:viaje_id>/recibos/', views.listado_recibos, name='listado_recibos'),

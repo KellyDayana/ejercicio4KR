@@ -39,6 +39,7 @@
                         <th>Estado</th>
                         <th>Departamento</th>
                         <th>Anticipo</th>
+                        <th>Aprobación</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -74,6 +75,15 @@
                                 <span class="badge bg-light text-dark">No</span>
                             {% endif %}
                         </td>
+                        <td class="text-center">
+                            {% if viaje.aprobacion == 'aprobado' %}
+                                <span class="badge bg-success"><i class="fas fa-check me-1"></i>Aprobado</span>
+                            {% elif viaje.aprobacion == 'rechazado' %}
+                                <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Rechazado</span>
+                            {% else %}
+                                <span class="badge bg-secondary"><i class="fas fa-clock me-1"></i>Pendiente</span>
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="{% url 'editar_viaje' viaje.id %}" class="btn btn-sm btn-outline-primary me-1" title="Editar">
                                 <i class="fa fa-edit"></i>
@@ -81,6 +91,18 @@
                             <a href="{% url 'listado_recibos' viaje.id %}" class="btn btn-sm btn-outline-success me-1" title="Ver Recibos">
                                 <i class="fa fa-receipt"></i>
                             </a>
+                            {% if user.is_superuser %}
+                                {% if viaje.aprobacion != 'aprobado' %}
+                                <a href="{% url 'aprobar_viaje' viaje.id %}" class="btn btn-sm btn-success me-1" title="Aprobar">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                                {% endif %}
+                                {% if viaje.aprobacion != 'rechazado' %}
+                                <a href="{% url 'rechazar_viaje' viaje.id %}" class="btn btn-sm btn-warning me-1" title="Rechazar">
+                                    <i class="fas fa-ban"></i>
+                                </a>
+                                {% endif %}
+                            {% endif %}
                             <a href="#" data-url="{% url 'eliminar_viaje' viaje.id %}"
                                onclick="event.preventDefault(); confirmarEliminacion(this)"
                                class="btn btn-sm btn-outline-danger" title="Eliminar">
@@ -90,7 +112,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="9" class="text-center text-muted">No hay viajes registrados.</td>
+                        <td colspan="10" class="text-center text-muted">No hay viajes registrados.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

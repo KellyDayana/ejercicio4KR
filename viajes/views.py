@@ -119,8 +119,25 @@ def procesar_edicion_viaje(request):
         return redirect('viaje_lista')
 
 @login_required
-def eliminar_viaje(request, id):
-    viaje = Viaje.objects.get(id=id)
+def aprobar_viaje(request, id):
+    if request.user.is_superuser:
+        viaje = Viaje.objects.get(id=id)
+        viaje.aprobacion = 'aprobado'
+        viaje.save()
+        messages.success(request, f'Viaje a {viaje.destino} aprobado correctamente.')
+    return redirect('viaje_lista')
+
+@login_required
+def rechazar_viaje(request, id):
+    if request.user.is_superuser:
+        viaje = Viaje.objects.get(id=id)
+        viaje.aprobacion = 'rechazado'
+        viaje.save()
+        messages.success(request, f'Viaje a {viaje.destino} rechazado.')
+    return redirect('viaje_lista')
+
+@login_required
+def eliminar_viaje(request, id):    viaje = Viaje.objects.get(id=id)
     if viaje.foto:
         if os.path.isfile(viaje.foto.path):
             os.remove(viaje.foto.path)

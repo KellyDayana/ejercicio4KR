@@ -27,6 +27,13 @@ class Viaje(models.Model):
     presupuesto = models.DecimalField(max_digits=10, decimal_places=2, default=500.00)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
+    APROBACION_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('aprobado', 'Aprobado'),
+        ('rechazado', 'Rechazado'),
+    ]
+    aprobacion = models.CharField(max_length=20, choices=APROBACION_CHOICES, default='pendiente')
+
     def __str__(self):
         return f"{self.destino} - {self.estado}"
 

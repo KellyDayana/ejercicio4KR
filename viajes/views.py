@@ -11,7 +11,11 @@ def inicio(request):
 
 @login_required
 def viaje_lista(request):
-    viajes = Viaje.objects.all()
+    # Admin ve todos los viajes, empleado solo los suyos
+    if request.user.is_superuser:
+        viajes = Viaje.objects.all()
+    else:
+        viajes = Viaje.objects.filter(usuario=request.user)
     return render(request, 'listadoViajes.html', {'viajes': viajes})
 
 @login_required
@@ -37,7 +41,8 @@ def guardar_viaje(request):
             departamento=departamento,
             requiere_anticipo=requiere_anticipo,
             foto=foto,
-            presupuesto=request.POST.get('presupuesto', 500)
+            presupuesto=request.POST.get('presupuesto', 500),
+            usuario=request.user
         )
         messages.success(request, 'Viaje guardado correctamente.')
         return redirect('viaje_lista')

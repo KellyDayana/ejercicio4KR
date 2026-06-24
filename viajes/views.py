@@ -56,8 +56,6 @@ def reporte(request):
     total_global_alimentacion = 0
     total_global = 0
 
-    PRESUPUESTO_BASE = 500  # presupuesto base por viaje en dólares
-
     for viaje in viajes:
         recibos = Recibo.objects.filter(viaje=viaje)
         total = sum(r.monto for r in recibos)
@@ -78,7 +76,9 @@ def reporte(request):
             'excede_presupuesto': excede,
             'excedente': excedente,
             'presupuesto_base': presupuesto_viaje,
-        })    pct_hospedaje = round((total_global_hospedaje / total_global * 100), 1) if total_global > 0 else 0
+        })
+
+    pct_hospedaje = round((total_global_hospedaje / total_global * 100), 1) if total_global > 0 else 0
     pct_alimentacion = round((total_global_alimentacion / total_global * 100), 1) if total_global > 0 else 0
 
     return render(request, 'reporte.html', {
@@ -88,7 +88,6 @@ def reporte(request):
         'pct_alimentacion': pct_alimentacion,
         'total_global_hospedaje': total_global_hospedaje,
         'total_global_alimentacion': total_global_alimentacion,
-        'presupuesto_base': PRESUPUESTO_BASE,
     })
 
 @login_required

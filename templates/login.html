@@ -20,17 +20,19 @@
                 <div class="card-body p-5">
                     <h4 class="text-center mb-4 text-primary"><i class="fas fa-sign-in-alt me-2"></i>Ingresa a tu cuenta</h4>
                     
-                    <form action="{% url 'login' %}" method="POST">
+                    <form action="{% url 'login' %}" method="POST" id="formLogin" novalidate>
                         {% csrf_token %}
                         
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="username" name="username" placeholder="Usuario" required>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Usuario">
                             <label for="username"><i class="fas fa-user me-2 text-muted"></i>Nombre de usuario</label>
+                            <div class="text-danger small mt-1" id="errorUsername"></div>
                         </div>
                         
                         <div class="form-floating mb-4">
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
                             <label for="password"><i class="fas fa-lock me-2 text-muted"></i>Contraseña</label>
+                            <div class="text-danger small mt-1" id="errorPassword"></div>
                         </div>
                         
                         <button type="submit" class="btn btn-primary w-100 rounded-pill py-3">
@@ -46,4 +48,41 @@
         </div>
     </div>
 </div>
+
+{% block scripts %}
+<script>
+    document.getElementById('formLogin').addEventListener('submit', function(e) {
+        let valido = true;
+
+        const username = document.getElementById('username').value.trim();
+        const errorUsername = document.getElementById('errorUsername');
+        if (username === '') {
+            errorUsername.textContent = 'El nombre de usuario es obligatorio.';
+            valido = false;
+        } else if (username.length < 3) {
+            errorUsername.textContent = 'El usuario debe tener al menos 3 caracteres.';
+            valido = false;
+        } else {
+            errorUsername.textContent = '';
+        }
+
+        const password = document.getElementById('password').value;
+        const errorPassword = document.getElementById('errorPassword');
+        if (password === '') {
+            errorPassword.textContent = 'La contraseña es obligatoria.';
+            valido = false;
+        } else if (password.length < 4) {
+            errorPassword.textContent = 'La contraseña debe tener al menos 4 caracteres.';
+            valido = false;
+        } else {
+            errorPassword.textContent = '';
+        }
+
+        if (!valido) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
+
 {% endblock %}

@@ -36,7 +36,8 @@ def guardar_viaje(request):
             estado=estado,
             departamento=departamento,
             requiere_anticipo=requiere_anticipo,
-            foto=foto
+            foto=foto,
+            presupuesto=request.POST.get('presupuesto', 500)
         )
         messages.success(request, 'Viaje guardado correctamente.')
         return redirect('viaje_lista')
@@ -62,18 +63,17 @@ def reporte(request):
         total_global_hospedaje += hospedaje
         total_global_alimentacion += alimentacion
 
-        excede = total > PRESUPUESTO_BASE
-        excedente = total - PRESUPUESTO_BASE if excede else 0
+        presupuesto_viaje = viaje.presupuesto
+        excede = total > presupuesto_viaje
+        excedente = total - presupuesto_viaje if excede else 0
 
         datos_viajes.append({
             'viaje': viaje,
             'total': total,
             'excede_presupuesto': excede,
             'excedente': excedente,
-            'presupuesto_base': PRESUPUESTO_BASE,
-        })
-
-    pct_hospedaje = round((total_global_hospedaje / total_global * 100), 1) if total_global > 0 else 0
+            'presupuesto_base': presupuesto_viaje,
+        })    pct_hospedaje = round((total_global_hospedaje / total_global * 100), 1) if total_global > 0 else 0
     pct_alimentacion = round((total_global_alimentacion / total_global * 100), 1) if total_global > 0 else 0
 
     return render(request, 'reporte.html', {
@@ -102,6 +102,7 @@ def procesar_edicion_viaje(request):
         viaje.estado = request.POST['estado']
         viaje.departamento = request.POST['departamento']
         viaje.requiere_anticipo = 'requiere_anticipo' in request.POST
+        viaje.presupuesto = request.POST.get('presupuesto', 500)
 
         nueva_foto = request.FILES.get('foto')
         if nueva_foto:

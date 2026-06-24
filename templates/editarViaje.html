@@ -99,6 +99,17 @@
                             </div>
                         </div>
 
+                        <!-- Presupuesto Base -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="number" class="form-control bg-white border-0"
+                                       name="presupuesto" id="presupuesto" placeholder="Presupuesto Base"
+                                       step="0.01" min="0" value="{{ viaje.presupuesto }}">
+                                <label for="presupuesto">Presupuesto Base ($)</label>
+                            </div>
+                            <div class="text-warning small" id="errorPresupuesto"></div>
+                        </div>
+
                         <!-- Foto con preview -->
                         <div class="col-12">
                             <label class="text-white fw-bold mb-2">Foto (credencial o boleto)</label>
@@ -211,6 +222,15 @@
             valido = false;
         } else {
             errorDepartamento.textContent = '';
+        }
+
+        const presupuesto = parseFloat(document.getElementById('presupuesto').value);
+        const errorPresupuesto = document.getElementById('errorPresupuesto');
+        if (isNaN(presupuesto) || presupuesto <= 0) {
+            errorPresupuesto.textContent = 'El presupuesto base debe ser mayor a 0.';
+            valido = false;
+        } else {
+            errorPresupuesto.textContent = '';
         }
 
         if (!valido) {

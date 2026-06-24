@@ -23,6 +23,7 @@ class Viaje(models.Model):
     departamento = models.CharField(max_length=20, choices=DEPARTAMENTO_CHOICES)
 
     requiere_anticipo = models.BooleanField(default=False)
+    presupuesto = models.DecimalField(max_digits=10, decimal_places=2, default=500.00)
 
     def __str__(self):
         return f"{self.destino} - {self.estado}"

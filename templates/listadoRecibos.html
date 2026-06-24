@@ -1,20 +1,35 @@
 {% extends 'plantillaPrincipal.html' %}
+{% load static %}
 
 {% block titulo %}Recibos del Viaje{% endblock %}
 
 {% block contenido %}
+
+<!-- Cabecera con imagen de fondo dinámica -->
+<!-- Se aplica un degradado oscuro (linear-gradient) para que el texto blanco sea fácil de leer -->
+<div class="container-fluid bg-breadcrumb" style="
+    background: linear-gradient(rgba(19, 53, 123, 0.7), rgba(19, 53, 123, 0.7)), 
+    url('{% if viaje.foto %}{{ viaje.foto.url }}{% else %}{% static 'img/bg-hero.jpg' %}{% endif %}') center center no-repeat; 
+    background-size: cover; 
+    padding: 120px 0 60px 0;">
+    <div class="container text-center py-4">
+        <h3 class="text-white display-3 mb-3">Recibos — {{ viaje.destino }}</h3>
+        <p class="text-white-50 mb-0 fs-5">
+            <i class="fa fa-calendar me-1"></i> {{ viaje.fecha_inicio }} al {{ viaje.fecha_fin }}
+            &nbsp;|&nbsp;
+            <i class="fa fa-building me-1"></i> {{ viaje.get_departamento_display }}
+        </p>
+    </div>
+</div>
+
+<!-- Contenido principal de la página -->
 <div class="container-fluid py-5">
     <div class="container py-5">
 
         <div class="row mb-4 align-items-center">
             <div class="col-md-8">
-                <h5 class="section-title px-3">Recibos</h5>
-                <h1 class="mb-0">Recibos — {{ viaje.destino }}</h1>
-                <p class="text-muted mt-2">
-                    <i class="fa fa-calendar me-1"></i> {{ viaje.fecha_inicio }} al {{ viaje.fecha_fin }}
-                    &nbsp;|&nbsp;
-                    <i class="fa fa-building me-1"></i> {{ viaje.get_departamento_display }}
-                </p>
+                <h5 class="section-title px-3">Gestión de Gastos</h5>
+                <h1 class="mb-0">Listado de Recibos</h1>
             </div>
             <div class="col-md-4 text-end">
                 <a href="{% url 'nuevo_recibo' viaje.id %}" class="btn btn-primary rounded-pill py-2 px-4 me-2">
@@ -29,27 +44,28 @@
         <!-- Total gastado -->
         <div class="row mb-4">
             <div class="col-md-4">
-                <div class="bg-primary text-white rounded p-4 text-center">
+                <div class="bg-primary text-white rounded p-4 text-center shadow-sm">
                     <h6>Total Gastado</h6>
                     <h2>${{ total_gastado }}</h2>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="bg-white border border-primary rounded p-4 text-center">
+                <div class="bg-white border border-primary rounded p-4 text-center shadow-sm">
                     <h6 class="text-primary">Hospedaje</h6>
                     <h2>{{ porcentaje_hospedaje }}%</h2>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="bg-white border border-primary rounded p-4 text-center">
+                <div class="bg-white border border-primary rounded p-4 text-center shadow-sm">
                     <h6 class="text-primary">Alimentación</h6>
                     <h2>{{ porcentaje_alimentacion }}%</h2>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded p-4 shadow-sm">
-            <table id="tblRecibos" class="display w-100">
+        <!-- Tabla de recibos -->
+        <div class="bg-white rounded p-4 shadow-sm border">
+            <table id="tblRecibos" class="display table table-hover w-100">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -66,8 +82,10 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ recibo.concepto }}</td>
-                        <td>${{ recibo.monto }}</td>
-                        <td>{{ recibo.get_tipo_gasto_display }}</td>
+                        <td><strong>${{ recibo.monto }}</strong></td>
+                        <td>
+                            <span class="badge bg-info text-dark">{{ recibo.get_tipo_gasto_display }}</span>
+                        </td>
                         <td>{{ recibo.fecha_emision }}</td>
                         <td class="text-center">
                             {% if recibo.pdf %}
@@ -75,7 +93,7 @@
                                     <i class="bi bi-file-pdf"></i> Ver PDF
                                 </a>
                             {% else %}
-                                <b>N/A</b>
+                                <span class="text-muted">N/A</span>
                             {% endif %}
                         </td>
                         <td>
@@ -91,7 +109,10 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center text-muted">No hay recibos registrados para este viaje.</td>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="fas fa-folder-open fs-1 mb-3 text-secondary d-block"></i>
+                            No hay recibos registrados para este viaje.
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -110,7 +131,9 @@
                 buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5']
             }
         },
-        language: dtEspanol
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+        }
     });
 </script>
 {% endblock %}

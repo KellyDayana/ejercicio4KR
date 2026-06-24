@@ -2,66 +2,195 @@
 {% load static %}
 
 {% block contenido %}
+
+<!-- Hero / Carousel -->
 <div class="carousel-header">
-                <div id="carouselId" class="carousel slide" data-bs-ride="carousel">
-                    <ol class="carousel-indicators">
-                        <li data-bs-target="#carouselId" data-bs-slide-to="0" class="active"></li>
-                        <li data-bs-target="#carouselId" data-bs-slide-to="1"></li>
-                        <li data-bs-target="#carouselId" data-bs-slide-to="2"></li>
-                    </ol>
-                    <div class="carousel-inner" role="listbox">
-                        <div class="carousel-item active">
-                            <img src="{% static 'img/carousel-2.jpg' %}" class="img-fluid" alt="Image">
-                            <div class="carousel-caption">
-                                <div class="p-3" style="max-width: 900px;">
-                                    <h4 class="text-white text-uppercase fw-bold mb-4" style="letter-spacing: 3px;">Explore The World</h4>
-                                    <h1 class="display-2 text-capitalize text-white mb-4">Let's The World Together!</h1>
-                                    <p class="mb-5 fs-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                                    </p>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <a class="btn-hover-bg btn btn-primary rounded-pill text-white py-3 px-5" href="#">Discover Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="{% static 'img/carousel-1.jpg' %}" class="img-fluid" alt="Image">
-                            <div class="carousel-caption">
-                                <div class="p-3" style="max-width: 900px;">
-                                    <h4 class="text-white text-uppercase fw-bold mb-4" style="letter-spacing: 3px;">Explore The World</h4>
-                                    <h1 class="display-2 text-capitalize text-white mb-4">Find Your Perfect Tour At Travel</h1>
-                                    <p class="mb-5 fs-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                                    </p>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <a class="btn-hover-bg btn btn-primary rounded-pill text-white py-3 px-5" href="#">Discover Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="{% static 'img/carousel-3.jpg' %}" class="img-fluid" alt="Image">
-                            <div class="carousel-caption">
-                                <div class="p-3" style="max-width: 900px;">
-                                    <h4 class="text-white text-uppercase fw-bold mb-4" style="letter-spacing: 3px;">Explore The World</h4>
-                                    <h1 class="display-2 text-capitalize text-white mb-4">You Like To Go?</h1>
-                                    <p class="mb-5 fs-5">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                                    </p>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <a class="btn-hover-bg btn btn-primary rounded-pill text-white py-3 px-5" href="#">Discover Now</a>
-                                    </div>
-                                </div>
-                            </div>
+    <div id="carouselId" class="carousel slide" data-bs-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-bs-target="#carouselId" data-bs-slide-to="0" class="active"></li>
+            <li data-bs-target="#carouselId" data-bs-slide-to="1"></li>
+            <li data-bs-target="#carouselId" data-bs-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner" role="listbox">
+
+            <div class="carousel-item active">
+                <img src="{% static 'img/carousel-1.jpg' %}" class="img-fluid" alt="Control de Gastos">
+                <div class="carousel-caption">
+                    <div class="p-3" style="max-width: 900px;">
+                        <h4 class="text-white text-uppercase fw-bold mb-4" style="letter-spacing: 3px;">Sistema de Gestión</h4>
+                        <h1 class="display-2 text-capitalize text-white mb-4">Control de Gastos de Viaje</h1>
+                        <p class="mb-5 fs-5">Registra, organiza y controla todos los gastos de tus viajes de trabajo. Sube tus recibos, gestiona presupuestos y genera reportes al instante.</p>
+                        <div class="d-flex align-items-center justify-content-center gap-3">
+                            {% if user.is_authenticated %}
+                                <a class="btn btn-primary rounded-pill text-white py-3 px-5" href="{% url 'nuevo_viaje' %}">
+                                    <i class="fas fa-plus me-2"></i>Nuevo Viaje
+                                </a>
+                                <a class="btn btn-outline-light rounded-pill py-3 px-5" href="{% url 'viaje_lista' %}">
+                                    <i class="fas fa-list me-2"></i>Mis Viajes
+                                </a>
+                            {% else %}
+                                <a class="btn btn-primary rounded-pill text-white py-3 px-5" href="{% url 'login' %}">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                                </a>
+                                <a class="btn btn-outline-light rounded-pill py-3 px-5" href="{% url 'registro' %}">
+                                    <i class="fas fa-user-plus me-2"></i>Registrarse
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon btn bg-primary" aria-hidden="false"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselId" data-bs-slide="next">
-                        <span class="carousel-control-next-icon btn bg-primary" aria-hidden="false"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
                 </div>
             </div>
-            <!-- Carousel End -->
+
+            <div class="carousel-item">
+                <img src="{% static 'img/carousel-2.jpg' %}" class="img-fluid" alt="Recibos y Facturas">
+                <div class="carousel-caption">
+                    <div class="p-3" style="max-width: 900px;">
+                        <h4 class="text-white text-uppercase fw-bold mb-4" style="letter-spacing: 3px;">Gestión de Recibos</h4>
+                        <h1 class="display-2 text-capitalize text-white mb-4">Sube tus Facturas y Notas de Venta</h1>
+                        <p class="mb-5 fs-5">Adjunta el PDF de cada gasto: hospedaje, alimentación o transporte. Todo organizado y disponible cuando lo necesites.</p>
+                        <div class="d-flex align-items-center justify-content-center">
+                            {% if user.is_authenticated %}
+                                <a class="btn btn-primary rounded-pill text-white py-3 px-5" href="{% url 'viaje_lista' %}">
+                                    <i class="fas fa-suitcase me-2"></i>Ver Viajes
+                                </a>
+                            {% else %}
+                                <a class="btn btn-primary rounded-pill text-white py-3 px-5" href="{% url 'login' %}">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Ingresar al Sistema
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="{% static 'img/carousel-3.jpg' %}" class="img-fluid" alt="Reportes">
+                <div class="carousel-caption">
+                    <div class="p-3" style="max-width: 900px;">
+                        <h4 class="text-white text-uppercase fw-bold mb-4" style="letter-spacing: 3px;">Reportes Automáticos</h4>
+                        <h1 class="display-2 text-capitalize text-white mb-4">Analiza tus Gastos en Segundos</h1>
+                        <p class="mb-5 fs-5">Visualiza el total gastado por viaje, compara hospedaje vs alimentación y detecta si excediste el presupuesto asignado.</p>
+                        <div class="d-flex align-items-center justify-content-center">
+                            {% if user.is_superuser %}
+                                <a class="btn btn-primary rounded-pill text-white py-3 px-5" href="{% url 'reporte' %}">
+                                    <i class="fas fa-chart-pie me-2"></i>Ver Reporte Global
+                                </a>
+                            {% elif user.is_authenticated %}
+                                <a class="btn btn-primary rounded-pill text-white py-3 px-5" href="{% url 'viaje_lista' %}">
+                                    <i class="fas fa-suitcase me-2"></i>Ver Mis Viajes
+                                </a>
+                            {% else %}
+                                <a class="btn btn-primary rounded-pill text-white py-3 px-5" href="{% url 'registro' %}">
+                                    <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon btn bg-primary" aria-hidden="false"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselId" data-bs-slide="next">
+            <span class="carousel-control-next-icon btn bg-primary" aria-hidden="false"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+</div>
+
+<!-- Tarjetas de funcionalidades -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h5 class="section-title px-3">¿Cómo funciona?</h5>
+            <h1>Todo lo que necesitas en un solo lugar</h1>
+        </div>
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="rounded p-4 shadow-sm border text-center h-100">
+                    <div class="mb-3">
+                        <i class="fas fa-suitcase fa-3x text-primary"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Registra tus Viajes</h4>
+                    <p class="text-muted mb-4">Crea viajes con destino, fechas, departamento y presupuesto. Adjunta la foto de tu credencial o boleto principal.</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'nuevo_viaje' %}" class="btn btn-primary rounded-pill px-4">
+                            <i class="fas fa-plus me-2"></i>Nuevo Viaje
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary rounded-pill px-4">
+                            <i class="fas fa-sign-in-alt me-2"></i>Ingresar
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="rounded p-4 shadow-sm border text-center h-100">
+                    <div class="mb-3">
+                        <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Sube tus Recibos</h4>
+                    <p class="text-muted mb-4">Adjunta el PDF de cada factura o nota de venta. Clasifica por tipo: hospedaje, alimentación o transporte.</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'viaje_lista' %}" class="btn btn-danger rounded-pill px-4">
+                            <i class="fas fa-list me-2"></i>Ver Viajes
+                        </a>
+                    {% else %}
+                        <a href="{% url 'registro' %}" class="btn btn-danger rounded-pill px-4">
+                            <i class="fas fa-user-plus me-2"></i>Registrarse
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="rounded p-4 shadow-sm border text-center h-100">
+                    <div class="mb-3">
+                        <i class="fas fa-chart-pie fa-3x text-success"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Consulta Reportes</h4>
+                    <p class="text-muted mb-4">Visualiza totales, porcentajes de hospedaje vs alimentación y si excediste el presupuesto asignado por viaje.</p>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'reporte' %}" class="btn btn-success rounded-pill px-4">
+                            <i class="fas fa-chart-bar me-2"></i>Reporte Global
+                        </a>
+                    {% elif user.is_authenticated %}
+                        <a href="{% url 'viaje_lista' %}" class="btn btn-success rounded-pill px-4">
+                            <i class="fas fa-eye me-2"></i>Ver Gastos
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-success rounded-pill px-4">
+                            <i class="fas fa-sign-in-alt me-2"></i>Ingresar
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Sección CTA si no está logueado -->
+{% if not user.is_authenticated %}
+<div class="container-fluid bg-primary py-5">
+    <div class="container py-3 text-center">
+        <h2 class="text-white fw-bold mb-3">¿Listo para comenzar?</h2>
+        <p class="text-white fs-5 mb-4">Crea tu cuenta gratis y empieza a gestionar los gastos de tus viajes de trabajo hoy mismo.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'registro' %}" class="btn btn-light text-primary rounded-pill py-3 px-5 fw-bold">
+                <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light rounded-pill py-3 px-5">
+                <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}

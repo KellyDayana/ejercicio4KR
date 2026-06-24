@@ -43,7 +43,48 @@ def guardar_viaje(request):
 
 @login_required
 def reporte(request):
-    return render(request, 'reporte.html')
+    viajes = Viaje.objects.all()
+    datos_viajes = []
+
+    total_global_hospedaje = 0
+    total_global_alimentacion = 0
+    total_global = 0
+
+    PRESUPUESTO_BASE = 500  # presupuesto base por viaje en dólares
+
+    for viaje in viajes:
+        recibos = Recibo.objects.filter(viaje=viaje)
+        total = sum(r.monto for r in recibos)
+        hospedaje = sum(r.monto for r in recibos if r.tipo_gasto == 'hospedaje')
+        alimentacion = sum(r.monto for r in recibos if r.tipo_gasto == 'alimentacion')
+
+        total_global += total
+        total_global_hospedaje += hospedaje
+        total_global_alimentacion += alimentacion
+
+        excede = total > PRESUPUESTO_BASE
+        excedente = total - PRESUPUESTO_BASE if excede else 0
+
+        datos_viajes.append({
+            'viaje': viaje,
+            'total': total,
+            'excede_presupuesto': excede,
+            'excedente': excedente,
+            'presupuesto_base': PRESUPUESTO_BASE,
+        })
+
+    pct_hospedaje = round((total_global_hospedaje / total_global * 100), 1) if total_global > 0 else 0
+    pct_alimentacion = round((total_global_alimentacion / total_global * 100), 1) if total_global > 0 else 0
+
+    return render(request, 'reporte.html', {
+        'datos_viajes': datos_viajes,
+        'total_global': total_global,
+        'pct_hospedaje': pct_hospedaje,
+        'pct_alimentacion': pct_alimentacion,
+        'total_global_hospedaje': total_global_hospedaje,
+        'total_global_alimentacion': total_global_alimentacion,
+        'presupuesto_base': PRESUPUESTO_BASE,
+    })
 
 @login_required
 def editar_viaje(request, id):

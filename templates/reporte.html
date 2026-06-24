@@ -1,0 +1,175 @@
+{% extends 'plantillaPrincipal.html' %}
+{% load static %}
+
+{% block titulo %}Reporte Global de Gastos{% endblock %}
+
+{% block contenido %}
+
+<!-- Cabecera -->
+<div class="container-fluid bg-breadcrumb" style="
+    background: linear-gradient(rgba(19, 53, 123, 0.8), rgba(19, 53, 123, 0.8)),
+    url('{% static 'img/destination-2.jpg' %}') center center no-repeat;
+    background-size: cover;
+    padding: 120px 0 60px 0;">
+    <div class="container text-center py-4">
+        <h3 class="text-white display-4 mb-3">
+            <i class="fas fa-chart-pie me-3"></i>Reporte Global de Gastos
+        </h3>
+        <p class="text-white fs-5">Resumen de todos los viajes y gastos registrados en el sistema</p>
+    </div>
+</div>
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+
+        <!-- Tarjetas de resumen global -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="bg-primary text-white rounded-3 p-4 text-center shadow">
+                    <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                    <h6 class="text-uppercase">Total Global Gastado</h6>
+                    <h2 class="fw-bold">${{ total_global }}</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="bg-white border border-primary rounded-3 p-4 text-center shadow">
+                    <i class="fas fa-bed fa-2x mb-2 text-primary"></i>
+                    <h6 class="text-uppercase text-primary">% Hospedaje</h6>
+                    <h2 class="fw-bold text-primary">{{ pct_hospedaje }}%</h2>
+                    <small class="text-muted">${{ total_global_hospedaje }}</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="bg-white border border-success rounded-3 p-4 text-center shadow">
+                    <i class="fas fa-utensils fa-2x mb-2 text-success"></i>
+                    <h6 class="text-uppercase text-success">% Alimentación</h6>
+                    <h2 class="fw-bold text-success">{{ pct_alimentacion }}%</h2>
+                    <small class="text-muted">${{ total_global_alimentacion }}</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="bg-white border border-warning rounded-3 p-4 text-center shadow">
+                    <i class="fas fa-suitcase fa-2x mb-2 text-warning"></i>
+                    <h6 class="text-uppercase text-warning">Total de Viajes</h6>
+                    <h2 class="fw-bold text-warning">{{ datos_viajes|length }}</h2>
+                    <small class="text-muted">Presupuesto base: ${{ presupuesto_base }}</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de comparación Hospedaje vs Alimentación -->
+        <div class="bg-white rounded-3 p-4 shadow-sm border mb-5">
+            <h5 class="mb-3 text-primary">
+                <i class="fas fa-chart-bar me-2"></i>Comparativa: Hospedaje vs Alimentación
+            </h5>
+            <div class="mb-2 d-flex justify-content-between">
+                <span class="text-primary fw-bold">Hospedaje</span>
+                <span class="text-primary fw-bold">{{ pct_hospedaje }}%</span>
+            </div>
+            <div class="progress mb-3" style="height: 22px;">
+                <div class="progress-bar bg-primary" role="progressbar"
+                     style="width: {{ pct_hospedaje }}%;"
+                     aria-valuenow="{{ pct_hospedaje }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ pct_hospedaje }}%
+                </div>
+            </div>
+            <div class="mb-2 d-flex justify-content-between">
+                <span class="text-success fw-bold">Alimentación</span>
+                <span class="text-success fw-bold">{{ pct_alimentacion }}%</span>
+            </div>
+            <div class="progress" style="height: 22px;">
+                <div class="progress-bar bg-success" role="progressbar"
+                     style="width: {{ pct_alimentacion }}%;"
+                     aria-valuenow="{{ pct_alimentacion }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ pct_alimentacion }}%
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla detallada por viaje -->
+        <div class="bg-white rounded-3 p-4 shadow-sm border">
+            <h5 class="mb-4 text-primary">
+                <i class="fas fa-list-alt me-2"></i>Detalle por Viaje
+            </h5>
+            <table id="tblReporte" class="display table table-hover w-100">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>Destino</th>
+                        <th>Departamento</th>
+                        <th>Estado</th>
+                        <th>Total Gastado</th>
+                        <th>Presupuesto Base</th>
+                        <th>¿Excede?</th>
+                        <th>Excedente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dato in datos_viajes %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{% url 'listado_recibos' dato.viaje.id %}" class="text-primary fw-bold">
+                                {{ dato.viaje.destino }}
+                            </a>
+                        </td>
+                        <td>{{ dato.viaje.get_departamento_display }}</td>
+                        <td>
+                            {% if dato.viaje.estado == 'activo' %}
+                                <span class="badge bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Concluido</span>
+                            {% endif %}
+                        </td>
+                        <td><strong>${{ dato.total }}</strong></td>
+                        <td>${{ dato.presupuesto_base }}</td>
+                        <td class="text-center">
+                            {% if dato.excede_presupuesto %}
+                                <span class="badge bg-danger">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Sí
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>No
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if dato.excede_presupuesto %}
+                                <span class="text-danger fw-bold">+${{ dato.excedente }}</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <i class="fas fa-folder-open fs-1 mb-3 text-secondary d-block"></i>
+                            No hay viajes registrados en el sistema.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    new DataTable('#tblReporte', {
+        layout: {
+            topStart: {
+                buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5']
+            }
+        },
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+        }
+    });
+</script>
+{% endblock %}

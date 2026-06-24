@@ -137,7 +137,8 @@ def rechazar_viaje(request, id):
     return redirect('viaje_lista')
 
 @login_required
-def eliminar_viaje(request, id):    viaje = Viaje.objects.get(id=id)
+def eliminar_viaje(request, id):
+    viaje = Viaje.objects.get(id=id)
     if viaje.foto:
         if os.path.isfile(viaje.foto.path):
             os.remove(viaje.foto.path)
